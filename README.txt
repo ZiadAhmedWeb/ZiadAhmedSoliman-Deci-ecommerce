@@ -1,6 +1,8 @@
 ZeeCrumb — Full-Stack E-Commerce Platform
 ==========================================
 
+Github repo: https://github.com/ZiadAhmedWeb/zeecrumb-ecommerce.git
+
 OVERVIEW
 --------
 ZeeCrumb is a full-stack e-commerce web application supporting customer
