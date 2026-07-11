@@ -1,0 +1,17 @@
+### test GET/
+
+Get http://localhost:8001/
+
+### test GET/api/data
+
+Get http://localhost:8001/api/data
+
+#### test POST/api/data
+
+Post http://localhost:8001/api/data
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "age": 30
+}
