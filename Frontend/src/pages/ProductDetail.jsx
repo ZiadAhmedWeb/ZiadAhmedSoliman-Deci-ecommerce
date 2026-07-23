@@ -128,10 +128,10 @@ function ProductDetail() {
         ) : (
           <ul className="review-list">
             {reviews.map((review) => (
-              <li key={review.id} className="review-item">
+              <li key={review._id} className="review-item">
                 <div className="review-header">
                   <span className="review-stars">{'⭐'.repeat(review.rating)}</span>
-                  <span className="review-author">{review.user.email}</span>
+                  <span className="review-author">{review.userEmail}</span>
                 </div>
                 {review.comment && <p className="review-comment">{review.comment}</p>}
               </li>

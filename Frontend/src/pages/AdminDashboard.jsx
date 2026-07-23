@@ -7,7 +7,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
-
+  const [stats, setStats] = useState(null);
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -22,17 +22,13 @@ function AdminDashboard() {
 
   const fetchData = () => {
     setLoading(true);
-    Promise.all([api.get('/products'), api.get('/categories')])
-      .then(([productsRes, categoriesRes]) => {
-        setProducts(productsRes.data.products);
-        setCategories(categoriesRes.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError('Failed to load admin data');
-        setLoading(false);
-      });
+    Promise.all([api.get('/products'), api.get('/categories'), api.get('/stats')])
+  .then(([productsRes, categoriesRes, statsRes]) => {
+    setProducts(productsRes.data.products);
+    setCategories(categoriesRes.data);
+    setStats(statsRes.data);
+    setLoading(false);
+  })
   };
 
   useEffect(() => {
@@ -143,7 +139,14 @@ function AdminDashboard() {
   return (
     <div>
       <h2>Admin Dashboard</h2>
-
+      {stats && (
+  <div className="stats-row">
+    <div className="stat-box"><strong>{stats.userCount}</strong><span>Users</span></div>
+    <div className="stat-box"><strong>{stats.productCount}</strong><span>Products</span></div>
+    <div className="stat-box"><strong>{stats.categoryCount}</strong><span>Categories</span></div>
+    <div className="stat-box"><strong>{stats.reviewCount}</strong><span>Reviews</span></div>
+  </div>
+)}
       <h3>Categories</h3>
       <form onSubmit={handleAddCategory}>
         <input

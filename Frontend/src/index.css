@@ -754,3 +754,7 @@ h3 {
   color: var(--text);
   line-height: 1.5;
 }
+
+.stats-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.stat-box { background: white; border-radius: 10px; padding: 1rem 1.5rem; text-align: center; border: 1px solid #e3f2ef; }
+.stat-box strong { display: block; font-size: 1.4rem; color: var(--turquoise-dark); }

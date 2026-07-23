@@ -5,6 +5,7 @@ const prisma = require('../prisma/client');
 const { authenticate } = require('../middleware/auth');
 const { isValidPassword } = require('../utils/validators');
 const router = express.Router();
+const sendWelcomeEmail = require('../utils/mailer');
 
 router.post('/register', async (req, res) => {
   try {
@@ -28,7 +29,7 @@ router.post('/register', async (req, res) => {
     const user = await prisma.user.create({
       data: { email, password: hashedPassword },
     });
-
+    sendWelcomeEmail(user.email);
     res.status(201).json({ id: user.id, email: user.email, role: user.role });
   } catch (err) {
     console.error(err);
@@ -50,11 +51,17 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+   const token = jwt.sign(
+  {
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "7d",
+  }
+);
 
     res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
   } catch (err) {
@@ -71,6 +78,39 @@ router.get('/me', authenticate, async (req, res) => {
     });
     res.json(user);
   } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+router.put('/me', authenticate, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const data = {};
+
+    if (email) data.email = email;
+    if (password) {
+      if (!isValidPassword(password)) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
+      }
+      data.password = await bcrypt.hash(password, 10);
+    }
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({ error: 'Nothing to update' });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.user.userId },
+      data,
+      select: { id: true, email: true, role: true, createdAt: true },
+    });
+
+    res.json(user);
+  } catch (err) {
+    if (err.code === 'P2002') {
+      return res.status(409).json({ error: 'Email already in use' });
+    }
     console.error(err);
     res.status(500).json({ error: 'Something went wrong' });
   }
