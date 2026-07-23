@@ -1,166 +1,219 @@
-ZeeCrumb — Full-Stack E-Commerce Platform
-==========================================
+# ZeeCrumb — Full-Stack E-Commerce Platform
 
-Github repo: https://github.com/ZiadAhmedWeb/ZiadAhmedSoliman-Deci-ecommerce.git
+GitHub Repository:
+https://github.com/ZiadAhmedWeb/ZiadAhmedSoliman-Deci-ecommerce.git
 
-OVERVIEW
---------
+## OVERVIEW
+
 ZeeCrumb is a full-stack e-commerce web application supporting customer
-and admin roles. Customers can browse products, search/filter/sort,
-manage a shopping cart, check out, and leave reviews. Admins can manage
-products and categories through a dedicated dashboard.
+and admin roles. Customers can browse products, search, filter, and sort
+products, manage a shopping cart, complete checkout, and leave product
+reviews. Administrators can manage products and categories through a
+dedicated dashboard and monitor store statistics.
 
-TECH STACK
-----------
+## TECH STACK
+
 Frontend:
-- React (Vite)
-- React Router
-- Axios
-- Context API (authentication state)
-- Vitest + React Testing Library + MSW (component testing)
+
+* React (Vite)
+* React Router
+* Axios
+* Context API (authentication state)
+* Vitest + React Testing Library + MSW (component testing)
 
 Backend:
-- Node.js + Express.js
-- PostgreSQL + Prisma ORM (primary application data)
-- MongoDB Atlas + Mongoose (request logging)
-- JWT authentication + bcrypt password hashing
-- Multer (image upload)
-- Jest + Supertest (unit + integration testing)
+
+* Node.js + Express.js
+* PostgreSQL + Prisma ORM (primary application data)
+* MongoDB Atlas + Mongoose (request logging and product reviews)
+* JWT authentication + bcrypt password hashing
+* Multer (image upload)
+* Jest + Supertest (unit + integration testing)
 
 DevOps:
-- Docker (separate Dockerfiles for frontend/backend)
-- Docker Compose (orchestrates frontend, backend, and PostgreSQL)
 
-FEATURES
---------
+* Docker (separate Dockerfiles for frontend/backend)
+* Docker Compose (orchestrates frontend, backend, and PostgreSQL)
+
+## FEATURES
+
 Authentication & Authorization:
-- User registration and login with JWT authentication
-- Password hashing with bcrypt
-- Role-based access control (customer vs admin)
-- Protected routes on both frontend and backend
-- User profile page (view account details)
+
+* User registration and login with JWT authentication
+* Password hashing with bcrypt
+* Role-based access control (customer vs admin)
+* Protected routes on both frontend and backend
+* User profile page displaying account information
 
 Product Catalog:
-- Full product CRUD (admin only: create, edit, delete)
-- Product image upload (admin)
-- Category management — separate Category model with CRUD (admin)
-- Product search by name
-- Filter by category
-- Sort by price (low/high) or name
-- Pagination
-- Product detail page with category tag, price, stock, and description
+
+* Full product CRUD (admin only)
+* Product image upload (admin)
+* Category management with separate Category model
+* Product search by name
+* Filter by category
+* Sort by price (ascending/descending) and name
+* Pagination
+* Product detail page with category, description, stock, and pricing
 
 Shopping & Checkout:
-- Shopping cart (add, update quantity, remove items)
-- Cart persists per logged-in user (stored in database, not local state)
-- Checkout flow with delivery address input
-- Automatic stock validation and deduction on checkout (prevents
-  over-ordering, uses a database transaction so stock and cart updates
-  succeed or fail together)
+
+* Shopping cart (add, update quantity, remove items)
+* Cart stored per authenticated user in PostgreSQL
+* Checkout with delivery address
+* Automatic stock validation and deduction using database transactions
 
 Reviews & Ratings:
-- Customers can leave a star rating (1-5) and written comment on any
-  product
-- One review per user per product (enforced server-side)
-- Reviews are persisted in the database and survive page refresh
-- Average rating and review count displayed on product detail page
-- All reviews for a product displayed with reviewer email and comment
+
+* Reviews stored in MongoDB using Mongoose
+* One review per user per product
+* Star rating (1–5) and optional written comment
+* Reviews persist after refresh
+* Average rating and review count displayed
+* Reviewer email and comment displayed for every review
 
 Admin Dashboard:
-- Product management (create, edit, delete, upload image)
-- Category management (create, delete)
-- All admin routes protected by role-based middleware
+
+* Product management (create, update, delete)
+* Product image upload
+* Category management
+* Store Statistics dashboard displaying:
+
+  * Total users
+  * Total products
+  * Total categories
+  * Total reviews
+* All admin routes protected by role-based middleware
 
 Home Page:
-- Hero banner with call-to-action
-- Category quick-link tiles
-- Rotating featured product carousel (pulled from real product data)
-- About section
-- Contact section
-- Founder card
+
+* Hero banner
+* Category quick links
+* Featured products carousel
+* About section
+* Contact section
+* Founder card
 
 Logging & Monitoring:
-- Every API request logged to MongoDB Atlas (method, route, status
-  code, user ID, timestamp) via Mongoose, independent of the main
-  PostgreSQL application data
+
+* Every API request is logged to MongoDB Atlas using Mongoose,
+  including HTTP method, endpoint, status code, user ID, and timestamp.
 
 Design:
-- Responsive layout (mobile and desktop)
-- Custom color palette and consistent styling across all pages
 
-HOW TO RUN — DOCKER (RECOMMENDED)
-----------------------------------
-Requirements: Docker Desktop installed and running.
+* Responsive desktop and mobile layout
+* Consistent custom color palette and styling
+
+## HOW TO RUN — DOCKER (RECOMMENDED)
+
+Requirements:
+
+* Docker Desktop
 
 1. Clone the repository.
-2. At the project root, create a file named ".env" containing:
-     MONGO_URI="your-mongodb-atlas-connection-string"
-3. From the project root, run:
-     docker-compose up --build
-4. Wait for all three containers (postgres, backend, frontend) to start.
-   Database migrations run automatically on backend startup, and the
-   database is pre-seeded with sample products, categories, and a demo
-   admin account via backup.sql (restores automatically on first run).
-5. Open http://localhost:5173 in your browser.
 
-HOW TO RUN — LOCAL (WITHOUT DOCKER)
--------------------------------------
-Requirements: Node.js, PostgreSQL installed locally.
+2. Create a `.env` file in the project root containing:
+
+   MONGO_URI="your-mongodb-atlas-connection-string"
+
+3. Run:
+
+   docker-compose up --build
+
+4. Wait for all containers to start.
+
+5. Open:
+
+   http://localhost:5173
+
+## HOW TO RUN — LOCAL
+
+Requirements:
+
+* Node.js
+* PostgreSQL
+* MongoDB Atlas
 
 Backend:
+
 1. cd Backend
 2. npm install
-3. Create a ".env" file in Backend/ with:
-     DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/ecommerce_db"
-     JWT_SECRET="your-secret-string"
-     MONGO_URI="your-mongodb-atlas-connection-string"
-     PORT=5000
-4. npx prisma migrate dev
-5. npm run dev
+3. Create Backend/.env
+
+DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/ecommerce_db"
+JWT_SECRET="your-secret"
+MONGO_URI="your-mongodb-atlas-connection-string"
+PORT=5000
+
+4. Generate Prisma Client:
+
+   npx prisma generate
+
+5. Run migrations:
+
+   npx prisma migrate dev
+
+6. Start backend:
+
+   npm run dev
 
 Frontend:
+
 1. cd Frontend
 2. npm install
 3. npm run dev
-4. Open http://localhost:5173
 
-RUNNING TESTS
--------------
-Backend (Jest + Supertest):
-   cd Backend
-   npm test
+Open:
 
-Frontend (Vitest + React Testing Library + MSW):
-   cd Frontend
-   npm test
+http://localhost:5173
 
-PROJECT URLS
-------------
-Frontend:        http://localhost:5173
-Backend API:      http://localhost:5000/api
-Prisma Studio:    npx prisma studio (run from Backend/)
+## RUNNING TESTS
 
-TEST ACCOUNTS
---------------
-Admin:
-   Email:    admin@zeecrumb.com
-   Password: admin123
+Backend:
 
-Customer:
-   Register a new account at /register — any customer account created
-   this way can browse products, use the cart, check out, and leave
-   reviews.
+cd Backend
+npm test
 
-KNOWN LIMITATIONS / FUTURE IMPROVEMENTS
------------------------------------------
-- JWT is stored in localStorage for simplicity. A production version
-  would use httpOnly cookies to reduce XSS exposure.
-- Frontend testing uses Vitest (Vite's native test runner) rather than
-  Jest, since the project uses Vite; the testing approach and tooling
-  (React Testing Library + MSW) match the assignment requirements.
-- Checkout is simplified: it validates and deducts stock and clears the
-  cart, but does not persist a full order history record.
+Frontend:
 
-AUTHOR
-------
-Zee
+cd Frontend
+npm test
+
+## PROJECT URLS
+
+Frontend:
+http://localhost:5173
+
+Backend API:
+http://localhost:5000/api
+
+Prisma Studio:
+
+npx prisma studio
+
+## TEST ACCOUNTS
+
+Admin
+
+Email:
+[admin@zeecrumb.com](mailto:admin@zeecrumb.com)
+
+Password:
+admin123
+
+Customer
+
+Register a new account from the Register page.
+
+## KNOWN LIMITATIONS / FUTURE IMPROVEMENTS
+
+* JWT is stored in localStorage. A production deployment should use
+  httpOnly cookies.
+* Frontend testing uses Vitest instead of Jest because the project is
+  built with Vite.
+* Checkout currently validates stock and clears the cart but does not
+  maintain a complete order history.
+
+## AUTHOR
+
+Ziad Ahmed
